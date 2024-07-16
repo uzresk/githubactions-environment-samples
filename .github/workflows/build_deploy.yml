@@ -1,0 +1,74 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: 
+    inputs:
+      artifact_name:
+        description: 'Artifact Name'
+        required: true
+
+jobs:
+  build:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Add date to artifact file name
+        run: |
+          DATE=$(date +'%Y-%m-%d')
+          echo "artifact_name=artifact-$DATE.txt" >> $GITHUB_ENV
+          mv artifact.txt artifact-$DATE.txt
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: artifact-*.txt
+          retention-days: 60
+
+      - name: echo summary
+        run: |
+          echo "Build Succesful" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY # this is a blank line
+          echo "- 成果物: ${{ env.artifact_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- 権限があるユーザでDeployを実行してください" >> $GITHUB_STEP_SUMMARY
+
+  approve:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check user permissions
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const allowedUsers = ['uzresk'];
+            if (!allowedUsers.includes(context.actor)) {
+              core.setFailed('User not authorized to run this workflow');
+            }
+
+      - name: Wait for approval
+        run: echo "Waiting for manual approval..."
+
+  deploy:
+    needs: approve
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download build artifacts
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          github_token: ${{secrets.GITHUB_TOKEN}}
+          workflow: build.yml
+          workflow_conclusion: success
+          name: build-output
+          path: .
+      
+      - name: Deploy to server
+        run: |
+          echo "Deploying..."
+          cat ${{ github.event.inputs.artifact_name }}
