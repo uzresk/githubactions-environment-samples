@@ -26,6 +26,15 @@ jobs:
     if: github.event_name == 'workflow_dispatch'
 
     steps:
+      - name: Check user permissions
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const allowedUsers = ['uzresk'];
+            if (!allowedUsers.includes(context.actor)) {
+              core.setFailed('User not authorized to run this workflow');
+            }
+
       - name: Wait for approval
         run: echo "Waiting for manual approval..."
 
