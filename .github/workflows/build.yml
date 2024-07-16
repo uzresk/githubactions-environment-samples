@@ -15,6 +15,7 @@ jobs:
       - name: Add date to artifact file name
         run: |
           DATE=$(date +'%Y-%m-%d')
+          echo "artifact_name=artifact-$DATE.txt" >> $GITHUB_ENV
           mv artifact.txt artifact-$DATE.txt
 
       - name: Upload build artifact
@@ -23,3 +24,11 @@ jobs:
           name: build-output
           path: artifact-*.txt
           retention-days: 60
+
+      - name: echo summary
+        run: |
+          echo "Build Succesful" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY # this is a blank line
+          echo "- Lets add a bullet point" >> $GITHUB_STEP_SUMMARY
+          echo "- 成果物${{ env.artifact_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- 権限があるユーザでDeployを実行してください" >> $GITHUB_STEP_SUMMARY
