@@ -38,9 +38,9 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: build-artifacts
-          path: ./artifacts-downloaded.txt
+          path: ./artifact.txt
 
       - name: Deploy to server
         run: |
           echo "Deploying..."
-          cat ./artficat-downloaded.txt
+          cat ./artfact.txt
