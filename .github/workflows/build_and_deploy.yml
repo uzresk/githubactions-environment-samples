@@ -38,7 +38,7 @@ jobs:
         run: echo "Waiting for manual approval..."
 
   deploy:
-    needs: approve
+    needs: [build, approve]
     runs-on: ubuntu-latest
 
     steps:
@@ -47,7 +47,7 @@ jobs:
         with:
           name: build-output
           path: .
-
+      
       - name: Deploy to server
         run: |
           echo "Deploying..."
