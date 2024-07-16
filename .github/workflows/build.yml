@@ -15,7 +15,7 @@ jobs:
       - name: Add date to artifact file name
         run: |
           DATE=$(date +'%Y-%m-%d')
-          mv build-artifact.txt build-artifact-$DATE.txt
+          mv artifact.txt artifact-$DATE.txt
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
