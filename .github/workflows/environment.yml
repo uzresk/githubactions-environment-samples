@@ -1,0 +1,19 @@
+name: Environment 
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: echo variables
+        run: echo ${{ vars.URL }}
+
