@@ -12,10 +12,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
           path: ./artifact.txt
@@ -35,7 +35,7 @@ jobs:
 
     steps:
       - name: Download build artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: build-artifacts
           path: ./artifact.txt
@@ -43,4 +43,4 @@ jobs:
       - name: Deploy to server
         run: |
           echo "Deploying..."
-          cat ./artfact.txt
+          cat ./artifact.txt
