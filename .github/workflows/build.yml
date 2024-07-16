@@ -12,8 +12,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Add date to artifact file name
+        run: |
+          DATE=$(date +'%Y-%m-%d')
+          mv build-artifact.txt build-artifact-$DATE.txt
+
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: build-output
-          path: artifact.txt
+          path: artifact-*.txt
+          retention-days: 60
